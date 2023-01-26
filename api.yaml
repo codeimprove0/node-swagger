@@ -1,0 +1,102 @@
+openapi: 3.0.0
+info:
+  title: Code Improve API
+  description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.
+  version: 1.0 
+  
+
+servers:
+  - url: http://localhost:8081/
+    description:  Local server 
+  - url: https://prod.com/
+    description:  Pre Production server
+  - url: https://test.com/
+    description:  Production server
+  
+
+ 
+components:
+  securitySchemes:
+    ApiTokenss:        # arbitrary name for the security scheme
+          
+      type: http
+      scheme: bearer
+    
+    ApiKey:        # arbitrary name for the security scheme
+      type: apiKey
+      in: header       # can be "header", "query" or "cookie"
+      name: apikey
+      
+paths:
+  /users/detail/{userId}:
+    get:
+      security:
+       - ApiTokenss: []
+       - ApiKey: []
+      summary: Returns a user details by ID.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Parameter description in CommonMark or HTML.
+          schema:
+            # type : integer
+            # format: int64
+            type: string
+            example: "Users String"
+            minimum: 1
+      responses: 
+        '200':
+          description: OK
+  
+
+  paths:
+  /users/list:
+    post:
+      tags:
+        - User List API 
+      summary: Returns a user list. 
+      description: <b> Request :- </b> <br /> <br />
+              <b> page_no* </b>  is required <br /> 
+              <b> status* </b>  is required <br /> 
+              <b> type* </b>  is required <br /> 
+
+      parameters:
+        - in: query
+          name: month_year
+          schema:
+            #type: integer
+            example: 2022-10        
+      post:
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+           #application/json:
+            schema:
+              type: object
+              properties: 
+                page_no:         
+                  type: integer
+                  example: 1  
+                type:       
+                  type: string
+                  example: "A" 
+                status:
+                  type: integer
+                  example: 0
+                fileName:
+                  type: string 
+                  format: binary
+         
+      responses:
+        '200':
+          description: A user object. 
+        '400':
+          description: The specified user ID is invalid (not a number).
+        '404':
+          description: A user with the specified ID was not found.
+        default:
+          description: Unexpected error
+  
+  
